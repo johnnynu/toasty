@@ -1,14 +1,15 @@
 import {Storage} from '@google-cloud/storage';
 import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
+import path from 'path';
 
 const storage = new Storage();
 
 const rawVideoBucketName = 'toasty-raw-videos';
 const processedVideoBucketName = 'toasty-processed-videos';
 
-const localRawVideoPath = './raw';
-const localProcessedVideoPath = './processed';
+const localRawVideoPath = './raw-videos';
+const localProcessedVideoPath = './processed-videos';
 
 // Create local directory for raw and processed vids
 export function setupLocalDirectories() {
@@ -23,6 +24,7 @@ export function setupLocalDirectories() {
 **/
 export function convertVideo(rawVideoName: string, processedVideoName: string) {
     return new Promise<void>((resolve, reject) => {
+        ensureDirectoryExists(path.dirname(`${localProcessedVideoPath}/${processedVideoName}`));
         ffmpeg(`${localRawVideoPath}/${rawVideoName}`) // Use fluent-ffmpeg to process the video
         .outputOptions("-vf", "scale=1920:1080") // Scale the video to 1080p
         .on("end", () => {
@@ -44,10 +46,14 @@ export function convertVideo(rawVideoName: string, processedVideoName: string) {
 * @returns A promise that resolves when the video has been downloaded.
 **/
 export async function downloadRawVideo(fileName: string) {
-    await storage.bucket(rawVideoBucketName).file(fileName).download({destination: `${localRawVideoPath}/${fileName}`});
-
-    console.log(`Downloaded ${fileName} from ${rawVideoBucketName} to ${localRawVideoPath}`);
-}
+    try {
+      await storage.bucket(rawVideoBucketName).file(fileName).download({destination: `${localRawVideoPath}/${fileName}`});
+      console.log(`Downloaded ${fileName} from ${rawVideoBucketName} to ${localRawVideoPath}`);
+    } catch (error) {
+      console.error(`Error downloading ${fileName} from ${rawVideoBucketName}:`, error);
+      throw error;
+    }
+  }
 
 /**
 * @param fileName - The name of the file to upload to the {@link processedVideoBucketName} bucket from the {@link localProcessedVideoPath} directory.
@@ -59,9 +65,9 @@ export async function uploadProcessedVideo(fileName: string) {
         destination: fileName
     });
 
-    await bucket.file(fileName).makePublic();
+    console.log(`${localProcessedVideoPath}/${fileName} Uploaded to gs://${processedVideoBucketName}/${fileName}`);
 
-    console.log(`Uploaded ${fileName} to ${processedVideoBucketName}`);
+    await bucket.file(fileName).makePublic();
 }
 
 /**

@@ -21,13 +21,15 @@ app.post("/process-video", async (req, res) => {
   }
 
   const inputFileName= data.name;
-  const outputFileName = `processed/${inputFileName}`;
+  const outputFileName = `processed-${inputFileName}`;
+
+  console.log(`Received request to process video: ${inputFileName}`);
 
   // Download the raw video from GCP Storage
-  await downloadRawVideo(inputFileName);
 
   // Convert the video to 1080p
   try {
+    await downloadRawVideo(inputFileName);
     await convertVideo(inputFileName, outputFileName);
   } catch (error) {
     await Promise.all([
