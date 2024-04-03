@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 
-export const Navbar = () => {
+export const Navbar: React.FC = () => {
   const scrolled = useScrollTop();
 
   return (
