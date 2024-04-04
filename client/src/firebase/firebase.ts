@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import {
   getAuth,
   signInWithPopup,
@@ -8,17 +7,13 @@ import {
   onAuthStateChanged,
   User,
 } from "firebase/auth";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const firebaseConfig = {
-  // Replaced hardcoded firebaseConfig values with .env variables for better security and configurability
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  appId: process.env.APP_ID,
-  measurementId: process.env.MEASUREMENT_ID,
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
@@ -49,6 +44,6 @@ export const signOut = async () => {
  */
 export const onAuthStateChangedHelper = (
   callback: (user: User | null) => void
-) => {
+): (() => void) => {
   return onAuthStateChanged(auth, callback);
 };

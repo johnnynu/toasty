@@ -8,10 +8,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import GoogleButton from "./SignInButton";
+import { onAuthStateChangedHelper } from "@/firebase/firebase";
 import { Link } from "react-router-dom";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
+import { User } from "firebase/auth";
+import { userAtom } from "@/store";
 
 export const Navbar: React.FC = () => {
   const scrolled = useScrollTop();
+  const [, setUser] = useAtom(userAtom);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedHelper((user: User | null) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  });
 
   return (
     <>
@@ -31,7 +46,7 @@ export const Navbar: React.FC = () => {
         </div>
         <div className="ml-auto flex items-center mr-2">
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button className="mr-2" variant="ghost" size="sm">
                 <TextAlignJustifyIcon />
               </Button>
@@ -40,9 +55,7 @@ export const Navbar: React.FC = () => {
               <DropdownMenuItem>Coming Soon</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button className="mr-2" variant="ghost" size="sm">
-            Sign In
-          </Button>
+          <GoogleButton />
         </div>
       </div>
     </>
