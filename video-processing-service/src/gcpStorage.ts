@@ -25,6 +25,8 @@ export function setupLocalDirectories() {
 export function convertVideo(rawVideoName: string, processedVideoName: string) {
     return new Promise<void>((resolve, reject) => {
         ensureDirectoryExists(path.dirname(`${localProcessedVideoPath}/${processedVideoName}`));
+        console.log(`Saving processed video to: ${localProcessedVideoPath}/${processedVideoName}`);
+
         ffmpeg(`${localRawVideoPath}/${rawVideoName}`) // Use fluent-ffmpeg to process the video
         .outputOptions("-vf", "scale=1920:1080") // Scale the video to 1080p
         .on("end", () => {

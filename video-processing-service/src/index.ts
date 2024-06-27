@@ -8,10 +8,12 @@ app.use(express.json()); // Use the express.json() middleware to parse incoming 
 
 app.post("/process-video", async (req, res) => {
   // Get the bucket and filename from the Cloud Pub/Sub message
+
   let data;
   try {
     const message = Buffer.from(req.body.message.data, 'base64').toString('utf8');
     data = JSON.parse(message);
+    console.log("Data object:", data);
     if (!data.name) {
       throw new Error("Invalid message payload received");
     }
@@ -56,3 +58,16 @@ app.listen(port, () => {
   // Start the server
   console.log(`Server running at http://localhost:${port}`); // Log a message to the console
 });
+
+function ensureFileExtension(fileName: string): string {
+  const supportedExtensions = ['.mp4', '.webm', '.mov']; // Add more extensions if needed
+
+  for (const extension of supportedExtensions) {
+    if (fileName.toLowerCase().endsWith(extension)) {
+      return fileName;
+    }
+  }
+
+  // If no supported extension found, append .mp4 as the default
+  return `${fileName}.mp4`;
+}

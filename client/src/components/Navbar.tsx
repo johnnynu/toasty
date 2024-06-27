@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import GoogleButton from "./SignInButton";
+import { Upload } from "./upload";
 import { onAuthStateChangedHelper } from "@/firebase/firebase";
 import { Link } from "react-router-dom";
 import { useAtom } from "jotai";
@@ -18,7 +19,7 @@ import { userAtom } from "@/store";
 
 export const Navbar: React.FC = () => {
   const scrolled = useScrollTop();
-  const [, setUser] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChangedHelper((user: User | null) => {
@@ -55,6 +56,7 @@ export const Navbar: React.FC = () => {
               <DropdownMenuItem>Coming Soon</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          {user && <Upload />}
           <GoogleButton />
         </div>
       </div>
