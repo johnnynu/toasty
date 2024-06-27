@@ -15,7 +15,7 @@ const localProcessedVideoPath = './processed-videos';
 export function setupLocalDirectories() {
     ensureDirectoryExists(localRawVideoPath);
     ensureDirectoryExists(localProcessedVideoPath);
-}
+} 
 
 /**
 * @param rawVideoName - The name of the file to concvert from {@link localRawVideoPath}.
