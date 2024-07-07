@@ -1,8 +1,8 @@
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-const functions = getFunctions();
+import { httpsCallable } from "firebase/functions";
+import { functions } from "./firebase";
 
 const generateUploadUrl = httpsCallable(functions, "generateUploadUrl");
+const getVideosFunction = httpsCallable(functions, "getVideos");
 
 export async function uploadVideo(file: File) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,4 +20,18 @@ export async function uploadVideo(file: File) {
   });
 
   return uploadResult;
+}
+
+export interface Video {
+  id?: string;
+  uid?: string;
+  fileName?: string;
+  status?: "processing" | "processed";
+  title?: string;
+  description?: string;
+}
+
+export async function getVideos() {
+  const res: any = await getVideosFunction();
+  return res.data as Video[];
 }
