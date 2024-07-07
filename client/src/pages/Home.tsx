@@ -26,7 +26,7 @@ export default function Home() {
       {videos.map((video) => (
         <Card key={video.id} className="w-full">
           <CardContent className="p-2">
-            <Link to={`/watch?v=${video.fileName}`}>
+            <Link to={`/watch?v=${video.fileName}`} key={video.id}>
               <img
                 src="/video_placeholder.png"
                 alt="video"
