@@ -22,7 +22,7 @@ Toasty is a simple video hosting and sharing platform, inspired by popular video
 
 ## Getting Started
 
-To use the Toasty Video Platform, simply visit our deployed website at [URL].](https://client-bic7zx632q-uc.a.run.app/)
+To use the Toasty Video Platform, simply visit our deployed website at (https://client-bic7zx632q-uc.a.run.app/)
 
 ### As a User
 
